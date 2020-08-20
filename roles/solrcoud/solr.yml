@@ -1,0 +1,63 @@
+---
+- name: "Zookeeper setup"
+  hosts: all
+  gather_facts: no
+#  remote_user: keygen
+  become: yes
+
+  tasks:
+  - name: Download Solr
+    get_url:
+      url: http://mirror.linux-ia64.org/apache/lucene/solr/8.6.1/solr-8.6.1.tgz
+      dest: /srv/solr-8.6.1.tgz
+
+  - name: Create solr dir
+    file:
+      path: /srv/solr
+      state: directory
+
+  - name: Unpack Solr
+    unarchive:
+      remote_src: yes
+      src: /srv/solr-8.6.1.tgz
+      dest: /srv/solr
+      extra_opts: [--strip-components=1]
+
+  - name: Add option
+    lineinfile:
+      path: /srv/solr/bin/solr.in.sh
+      line: SOLR_ULIMIT_CHECKS=false
+      create: yes
+
+  - name: Create home 1
+    file:
+      path: /srv/solr/home/node1/solr
+      state: directory
+
+  - name: Create home 2
+    file:
+      path: /srv/solr/home/node2/solr
+      state: directory
+
+  - name: Create home 3
+    file:
+      path: /srv/solr/home/node3/solr
+      state: directory
+
+  - name: Put config
+    copy:
+      remote_src: yes
+      src: /srv/solr/server/solr/solr.xml
+      dest: /srv/solr/home/node1/solr/solr.xml
+
+  - name: Put config
+    copy:
+      remote_src: yes
+      src: /srv/solr/server/solr/solr.xml
+      dest: /srv/solr/home/node2/solr/solr.xml
+
+  - name: Put config
+    copy:
+      remote_src: yes
+      src: /srv/solr/server/solr/solr.xml
+      dest: /srv/solr/home/node3/solr/solr.xml
