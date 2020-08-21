@@ -95,5 +95,20 @@
     - kafka
     - confluent-schema
 
-
-
+- name: test-playbook | Test sftp-server role
+  hosts: sftp
+  become: yes
+  vars:
+    - sftp_home_partition: "/srv"
+    - sftp_allow_passwords: True
+    - sftp_users:
+      - name: peter
+        password: "$1$salty$li5TXAa2G6oxHTDkqx3Dz/" # passpass
+        mode: "0770"
+        shell: False
+      - name: sally
+        password: "$1$salty$li5TXAa2G6oxHTDkqx3Dz/" # passpass
+        mode: "0770"
+        shell: False
+  roles:
+    - sftp
