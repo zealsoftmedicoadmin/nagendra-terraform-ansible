@@ -111,3 +111,26 @@ module "vm-instance" {
     }
   }
 }
+
+module "gcp-bucket" {
+  
+  source = "./modules/gcp-bucket"
+
+  bucket_name = "test-web-bucket"
+  bucket_location = "US"
+
+}
+
+module "gcp-lb" {
+  
+  source = "./modules/gcp-lb"
+
+  extip_name = "http-lb-address"
+  backend_bucket_name = "backend-bucket-1"
+  bucket_name = module.gcp-bucket.bucket_name
+
+  urlmap_name = "url-map-1"
+  http_proxy_name = "http-lb-proxy"
+  forward_rule_name = "http-lb-forward-rule-1"
+
+}
