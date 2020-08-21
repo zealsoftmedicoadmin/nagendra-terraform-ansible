@@ -1,0 +1,15 @@
+---
+# defaults file
+# Setup vars
+
+solr_distribution_url: "http://mirror.linux-ia64.org/apache/lucene/solr/8.6.1/solr-8.6.1.tgz"
+solr_distribution_dest: "/tmp/solr-8.6.1.tgz"
+solr_root: "/srv/solr"
+
+solr_service_user: "solr_service"
+# password: Hdosuwn763Hgpo
+# command to generate: ansible all -i localhost, -m debug -a "msg={{ 'Hdosuwn763Hgpo' | password_hash('sha512', 'mysalt') }}"
+solr_service_user_password: "$6$mysalt$cmk99ocCqrrYSxgm5Ym4MXpPmDnoSZJVcZAWS.Z3MufYfIYIiEk0HUZGLY4ulVPfZMpHJvYjH/mFKjSbOPAh40"
+
+solr_instances_count: 3
+solr_dns_name: 192.168.183.205

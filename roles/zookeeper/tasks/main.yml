@@ -1,0 +1,70 @@
+---
+# Here only tasks defined, no plays
+
+- name: Add the user for Zookeeper service
+  user:
+    name: "{{ zookeeper_service_user }}"
+    shell: /bin/bash
+    create_home: yes
+    password: "{{ zookeeper_service_user_password }}"
+    groups: [sudo]
+    append: yes
+
+- name: Download Zookeeper distribution
+  get_url:
+    url: "{{ zookeeper_distribution_url }}"
+    dest: "{{ zookeeper_distribution_dest }}"
+    force: no
+
+- name: Create Zookeeper data directories
+  file:
+    path: "{{ zookeeper_root }}/node{{ item }}/data"
+    state: directory
+  loop: "{{ range(1, zookeeper_instances_count + 1)|list }}"
+
+- name: Unpack Zookeepers
+  unarchive:
+    remote_src: yes
+    src: "{{ zookeeper_distribution_dest }}"
+    dest: "{{ zookeeper_root }}/node{{ item }}"
+    extra_opts: [--strip-components=1]
+  loop: "{{ range(1, zookeeper_instances_count + 1)|list }}"
+
+- name: Add Zookeeper instance ID
+  lineinfile:
+    path: "{{ zookeeper_root }}/node{{ item }}/data/myid"
+    line: "{{ item }}"
+    create: yes
+  loop: "{{ range(1, zookeeper_instances_count + 1)|list }}"
+
+- name: Create Zookeeper conf folders
+  file:
+    path: "{{ zookeeper_root }}/node{{ item }}/conf"
+    state: directory
+  loop: "{{ range(1, zookeeper_instances_count + 1)|list }}"
+
+- name: Put Zookeepers config
+  template:
+    src: zoo.cfg.j2
+    dest: "{{ zookeeper_root }}/node{{ item }}/conf/zoo.cfg"
+  loop: "{{ range(1, zookeeper_instances_count + 1)|list }}"
+
+- name: Put Zookeeper services
+  template:
+    src: zk.service.j2
+    dest: "/etc/systemd/system/zk{{ item }}.service"
+  loop: "{{ range(1, zookeeper_instances_count + 1)|list }}"
+
+- name:  Enable Zookeeper services
+  systemd:
+    name: "zk{{ item }}.service"
+    enabled: "yes"
+  loop: "{{ range(1, zookeeper_instances_count + 1)|list }}"
+
+- name: Set permissions on Zookeeper folders
+  file: 
+    path: "{{ zookeeper_root }}"
+    recurse: yes
+    owner: "{{ zookeeper_service_user }}"
+    group: "{{ zookeeper_service_user }}"
+  loop: "{{ range(1, zookeeper_instances_count + 1)|list }}"

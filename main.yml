@@ -1,0 +1,36 @@
+---
+- name: "Install required software"
+  hosts: all
+  gather_facts: no
+  become: yes
+  tasks:
+  - name: Install Java
+    apt:
+      name: default-jdk
+      state: present
+      update_cache: yes
+
+- name: "Install Zookeeper"
+  hosts: zookeeper
+  gather_facts: yes
+  become: yes
+  roles:
+    - { role: zookeeper }
+
+- name: "Install SolrCloud"
+  hosts: solr
+  gather_facts: no
+  become: yes
+  roles:
+    - { role: solrcloud }
+
+- name: "Install Kafka and Confluent Schema"
+  hosts: kafka
+  gather_facts: no
+  become: yes
+  roles:
+    - kafka
+    - confluent-schema
+
+
+

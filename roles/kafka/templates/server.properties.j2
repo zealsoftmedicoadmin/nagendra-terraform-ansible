@@ -18,7 +18,7 @@
 ############################# Server Basics #############################
 
 # The id of the broker. This must be set to a unique integer for each broker.
-broker.id=2
+broker.id={{ item }}
 
 ############################# Socket Server Settings #############################
 
@@ -57,7 +57,7 @@ socket.request.max.bytes=104857600
 ############################# Log Basics #############################
 
 # A comma separated list of directories under which to store log files
-log.dirs=/tmp/kafka-logs-3
+log.dirs={{ kafka_root }}/logs/node{{ item }}
 
 # The default number of log partitions per topic. More partitions allow greater
 # parallelism for consumption, but this will also result in more files across
@@ -135,5 +135,5 @@ zookeeper.connection.timeout.ms=18000
 # However, in production environments the default value of 3 seconds is more suitable as this will help to avoid unnecessary, and potentially expensive, rebalances during application startup.
 group.initial.rebalance.delay.ms=0
 
-port=9095
-advertised.host.name = localhost
+port={{ 9092 + item }}
+advertised.host.name = {{ kafka_dns_name }}

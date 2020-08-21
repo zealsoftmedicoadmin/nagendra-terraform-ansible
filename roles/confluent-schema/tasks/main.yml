@@ -1,0 +1,50 @@
+---
+# Here only tasks defined, no plays
+
+- name: Download Confluent distribution
+  get_url:
+    url: "{{ confluent_distribution_url }}"
+    dest: "{{ confluent_distribution_dest }}"
+    force: no
+
+- name: Create Confluent root directory
+  file:
+    path: "{{ confluent_root }}"
+    state: directory
+
+- name: Check if Confluent files already exists
+  stat:
+    path: "{{ confluent_root }}/bin"
+  register: confluent_files_status
+
+- name: Unpack Confluent
+  unarchive:
+    remote_src: yes
+    src: "{{ confluent_distribution_dest }}"
+    dest: "{{ confluent_root }}"
+    extra_opts: [--strip-components=1]
+  when: confluent_files_status.stat.isdir is not defined
+
+- name: Put Schema config
+  template:
+    src: schema-registry.properties.j2
+    dest: "{{ confluent_root }}/etc/schema-registry/schema-registry.properties"
+
+- name: Put Confluent schema service
+  template:
+    src: c-schema.service.j2
+    dest: "/etc/systemd/system/c-schema.service"
+
+- name: Enable Confluent Schema services
+  systemd:
+    name: "c-schema.service"
+    enabled: "yes"
+
+- name: Set permissions on Confluent folders
+  file: 
+    path: "{{ confluent_root }}"
+    recurse: yes
+    owner: "{{ confluent_service_user }}"
+    group: "{{ confluent_service_user }}"
+
+

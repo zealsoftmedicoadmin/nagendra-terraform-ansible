@@ -1,0 +1,10 @@
+tickTime=2000
+dataDir={{ zookeeper_root }}/node{{ item }}/data
+clientPort={{ 2180 + item }}
+4lw.commands.whitelist=mntr,conf,ruok
+initLimit=5
+syncLimit=2
+{% for id in range(1, zookeeper_instances_count + 1) %}
+server.{{ id }}=:{{ 2887 + id }}:{{ 3887 + id }}
+{% endfor %}
+

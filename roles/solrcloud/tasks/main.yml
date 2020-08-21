@@ -1,0 +1,76 @@
+---
+# Here only tasks defined, no plays
+
+- name: Add the user for Solr service
+  user:
+    name: "{{ solr_service_user }}"
+    shell: /bin/bash
+    create_home: yes
+    password: "{{ solr_service_user_password }}"
+    groups: [sudo]
+    append: yes
+
+- name: Download Solr distribution
+  get_url:
+    url: "{{ solr_distribution_url }}"
+    dest: "{{ solr_distribution_dest }}"
+    force: no
+
+- name: Create Solr root directory
+  file:
+    path: "{{ solr_root }}"
+    state: directory
+
+- name: Check if Solr files already exists
+  stat:
+    path: "{{ solr_root }}/bin"
+  register: solr_files_status
+
+- name: Unpack Solr
+  unarchive:
+    remote_src: yes
+    src: "{{ solr_distribution_dest }}"
+    dest: "{{ solr_root }}"
+    extra_opts: [--strip-components=1]
+  when: solr_files_status.stat.isdir is not defined
+
+- name: Disable ulimit checks
+  lineinfile:
+    path: "{{ solr_root }}/bin/solr.in.sh"
+    line: SOLR_ULIMIT_CHECKS=false
+    create: yes
+
+- name: Create home directories for Solr instances
+  file:
+    path: "{{ solr_root }}/home/node{{ item }}"
+    state: directory
+  loop: "{{ range(1, solr_instances_count + 1)|list }}"
+
+- name: Copy Solr config to instances home directories
+  copy:
+    remote_src: yes
+    src: "{{ solr_root }}/server/solr/solr.xml"
+    dest: "{{ solr_root }}/home/node{{ item }}/solr.xml"
+  loop: "{{ range(1, solr_instances_count + 1)|list }}"
+
+- name: Put Solr services
+  template:
+    src: solr.service.j2
+    dest: "/etc/systemd/system/solr{{ item }}.service"
+  loop: "{{ range(1, solr_instances_count + 1)|list }}"
+
+- name:  Enable Solr services
+  systemd:
+    name: "solr{{ item }}.service"
+    enabled: "yes"
+  loop: "{{ range(1, solr_instances_count + 1)|list }}"
+
+- name: Set permissions on Solr folders
+  file: 
+    path: "{{ solr_root }}"
+    recurse: yes
+    owner: '{{ solr_service_user }}'
+    group: '{{ solr_service_user }}'
+
+
+

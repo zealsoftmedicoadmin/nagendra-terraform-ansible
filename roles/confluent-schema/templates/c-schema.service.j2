@@ -1,0 +1,17 @@
+[Unit]
+Description=Schema Service
+Requires=kafka1.service
+After=kafka1.service
+
+[Service]    
+Type=forking
+WorkingDirectory={{ confluent_root }}
+User={{ confluent_service_user }}
+Group={{ confluent_service_user }}
+ExecStart={{ confluent_root }}/bin/schema-registry-start -daemon {{ confluent_root }}/etc/schema-registry/schema-registry.properties
+ExecStop={{ confluent_root }}/bin/schema-registry-stop
+TimeoutSec=30
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

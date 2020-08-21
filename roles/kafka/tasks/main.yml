@@ -1,0 +1,73 @@
+---
+# Here only tasks defined, no plays
+
+- name: Add the user for Kafka service
+  user:
+    name: "{{ kafka_service_user }}"
+    shell: /bin/bash
+    create_home: yes
+    password: "{{ kafka_service_user_password }}"
+    groups: [sudo]
+    append: yes
+
+- name: Download Kafka distribution
+  get_url:
+    url: "{{ kafka_distribution_url }}"
+    dest: "{{ kafka_distribution_dest }}"
+    force: no
+
+- name: Create Kafka root directory
+  file:
+    path: "{{ kafka_root }}"
+    state: directory
+
+- name: Check if Kafka files already exists
+  stat:
+    path: "{{ kafka_root }}/bin"
+  register: kafka_files_status
+
+- name: Unpack Kafka
+  unarchive:
+    remote_src: yes
+    src: "{{ kafka_distribution_dest }}"
+    dest: "{{ kafka_root }}"
+    extra_opts: [--strip-components=1]
+  when: kafka_files_status.stat.isdir is not defined
+
+- name: Create Kafka nodes directories for logs
+  file:
+    path: "{{ kafka_root }}/logs/node{{ item }}"
+    state: directory
+  loop: "{{ range(1, kafka_instances_count + 1)|list }}"
+
+- name: Put Kafka nodes config
+  template:
+    src: server.properties.j2
+    dest: "{{ kafka_root }}/config/server{{ item }}.properties"
+  loop: "{{ range(1, kafka_instances_count + 1)|list }}"
+
+- name: Delete server.properties file
+  file:
+    path: "{{ kafka_root }}/config/server.properties"
+    state: absent
+
+- name: Put Kafka services
+  template:
+    src: kafka.service.j2
+    dest: "/etc/systemd/system/kafka{{ item }}.service"
+  loop: "{{ range(1, kafka_instances_count + 1)|list }}"
+
+- name:  Enable Kafka services
+  systemd:
+    name: "kafka{{ item }}.service"
+    enabled: "yes"
+  loop: "{{ range(1, kafka_instances_count + 1)|list }}"
+
+- name: Set permissions on Kafka root
+  file: 
+    path: "/srv/kafka"
+    recurse: yes
+    owner: '{{ kafka_service_user }}'
+    group: '{{ kafka_service_user }}'
+
+

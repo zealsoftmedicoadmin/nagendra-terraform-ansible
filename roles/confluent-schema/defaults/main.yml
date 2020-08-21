@@ -1,0 +1,15 @@
+---
+# defaults file
+# Setup vars
+
+confluent_distribution_url: "https://packages.confluent.io/archive/5.5/confluent-5.5.1-2.12.tar.gz"
+confluent_distribution_dest: "/tmp/confluent-5.5.1-2.12.tar.gz"
+# without trailing "/"
+confluent_root: "/srv/confluent"
+confluent_service_user: "{{ kafka_service_user }}"
+# # password: Hdosuwn763Hgpo
+# # command to generate: ansible all -i localhost, -m debug -a "msg={{ 'Hdosuwn763Hgpo' | password_hash('sha512', 'mysalt') }}"
+# kafka_service_user_password: "$6$mysalt$cmk99ocCqrrYSxgm5Ym4MXpPmDnoSZJVcZAWS.Z3MufYfIYIiEk0HUZGLY4ulVPfZMpHJvYjH/mFKjSbOPAh40"
+
+# kafka_instances_count: 3
+# kafka_dns_name: 192.168.183.205

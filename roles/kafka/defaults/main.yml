@@ -1,0 +1,14 @@
+---
+# defaults file
+# Setup vars
+
+kafka_distribution_url: "https://apache-mirror.rbc.ru/pub/apache/kafka/2.6.0/kafka_2.13-2.6.0.tgz"
+kafka_distribution_dest: "/tmp/kafka_2.13-2.6.0.tgz"
+kafka_root: "/srv/kafka"
+kafka_service_user: "kafka_service"
+# password: Hdosuwn763Hgpo
+# command to generate: ansible all -i localhost, -m debug -a "msg={{ 'Hdosuwn763Hgpo' | password_hash('sha512', 'mysalt') }}"
+kafka_service_user_password: "$6$mysalt$cmk99ocCqrrYSxgm5Ym4MXpPmDnoSZJVcZAWS.Z3MufYfIYIiEk0HUZGLY4ulVPfZMpHJvYjH/mFKjSbOPAh40"
+
+kafka_instances_count: 3
+kafka_dns_name: 192.168.183.205

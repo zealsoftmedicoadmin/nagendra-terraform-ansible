@@ -1,0 +1,18 @@
+[Unit]
+Description=Kafka Service
+Documentation=https://kafka.apache.org/documentation/
+Requires=zk1.service
+After=zk1.service
+
+[Service]    
+Type=forking
+WorkingDirectory={{ kafka_root }}
+User={{ kafka_service_user }}
+Group={{ kafka_service_user }}
+ExecStart=/bin/sh -c '{{ kafka_root }}/bin/kafka-server-start.sh -daemon {{ kafka_root }}/config/server{{ item }}.properties'
+ExecStop={{ kafka_root }}/bin/kafka-server-stop.sh -daemon {{ kafka_root }}/config/server{{ item }}.properties
+TimeoutSec=30
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
