@@ -1,5 +1,4 @@
-output "ext_ip" {
+output "vminfo" {
   description = "The IP address of the vm"
-  value = module.vm-instance.instance-ip
+  value = module.vm-instance.instance-info
 }
-

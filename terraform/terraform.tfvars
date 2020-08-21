@@ -9,4 +9,4 @@
 
 global_project = "cloudtrialtests"
 global_region = "us-central1"
-//global_zone = "us-central1-a"
+global_credentials_file = "gcloud_terraform.json"

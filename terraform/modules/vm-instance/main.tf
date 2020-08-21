@@ -20,5 +20,14 @@ resource "google_compute_instance" "vm-instance" {
       // Ephemeral IP
     }
   }
+
+  labels = {
+    "assigned_products": each.value.assigned_products
+  }
+
+  metadata = {
+   ssh-keys = "${each.value.ssh_user}:${each.value.ssh_key}"
+ }
+
   
 }

@@ -11,7 +11,7 @@ provider "google" {
     If not use it don't forget run "gcloud auth application-default login" 
     command to get default credentials 
   */
-  // credentials = file(var.global_credentials_file)
+  credentials = file(var.global_credentials_file)
   project = var.global_project
   region = var.global_region
 }
@@ -45,6 +45,11 @@ module "firewall" {
 ***********/
 
   rules = {
+    "allow-ssh" = {
+        "priority" = "999",
+        "proto" = "tcp",
+        "ports" = ["22"]
+    }
     "allow-zookeeper" = {
         "priority" = "1000",
         "proto" = "tcp",
@@ -89,14 +94,20 @@ module "vm-instance" {
         "image" = "ubuntu-1804-bionic-v20200807",
         "network" = module.vpc.network,
         "subnetwork" = module.vpc.subnetwork,
-        "zone" = "us-central1-a"
+        "zone" = "us-central1-a",
+        "assigned_products" = "zookeeper-solr",
+        "ssh_user" = var.ssh_user,
+        "ssh_key" = var.ssh_key
     }
     "kafka-dev" = {
         "machine_type" = "n1-standard-1",
         "image" = "ubuntu-1804-bionic-v20200807",
         "network" = module.vpc.network,
         "subnetwork" = module.vpc.subnetwork,
-        "zone" = "us-central1-a"
+        "zone" = "us-central1-a",
+        "assigned_products" = "zookeeper-kafka",
+        "ssh_user" = var.ssh_user,
+        "ssh_key" = var.ssh_key
     }
   }
 }

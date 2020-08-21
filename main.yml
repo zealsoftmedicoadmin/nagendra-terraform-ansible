@@ -1,14 +1,75 @@
 ---
+- name: "Generate SSH keypair"
+  hosts: localhost
+  gather_facts: no
+  become: no
+  tasks:
+  - name: "Generate SSH"
+    openssh_keypair:
+      path: ./id_ssh_rsa
+    register: ssh_data
+
+- name: "Deploy VMs on Google Cloud with Terraform"
+  hosts: localhost
+  gather_facts: no
+  become: no
+  tasks:
+  - name: "Deploy VMs on Google Cloud"
+    terraform:
+      project_path: "./terraform"
+      state: present
+      variables:
+        ssh_user: "esh"
+        ssh_key: "{{ ssh_data.public_key }}"
+    register: terraform_result
+
+
+- name: "Adding deployed hosts to Ansible inventory. Based on labels"
+  hosts: localhost
+  gather_facts: no
+  become: no
+  tasks:
+
+  - name: Add to zookeeper and solr groups
+    add_host:
+      hostname: "{{ item.name }}"
+      ansible_ssh_host: "{{ item.ip }}"
+      ansible_user: esh
+      ansible_ssh_private_key_file: "{{ ssh_data.filename }}"
+      ansible_python_interpreter: /usr/bin/python3
+      groups:
+        - zookeeper
+        - solr
+    when: item.labels.assigned_products == "zookeeper-solr"
+    loop: "{{ terraform_result.outputs.vminfo.value }}"
+
+  - name: Add to zookeeper and kafka groups
+    add_host:
+      hostname: "{{ item.name }}"
+      ansible_ssh_host: "{{ item.ip }}"
+      ansible_user: esh
+      ansible_ssh_private_key_file: "{{ ssh_data.filename }}"
+      ansible_python_interpreter: /usr/bin/python3
+      groups:
+        - zookeeper
+        - kafka
+    when: item.labels.assigned_products == "zookeeper-kafka"
+    loop: "{{ terraform_result.outputs.vminfo.value }}"
+
+
 - name: "Install required software"
   hosts: all
   gather_facts: no
   become: yes
   tasks:
+  - name: Wait for SSH to become open on the host
+    wait_for_connection:
   - name: Install Java
     apt:
       name: default-jdk
       state: present
       update_cache: yes
+
 
 - name: "Install Zookeeper"
   hosts: zookeeper
@@ -17,12 +78,14 @@
   roles:
     - { role: zookeeper }
 
+
 - name: "Install SolrCloud"
   hosts: solr
   gather_facts: no
   become: yes
   roles:
     - { role: solrcloud }
+
 
 - name: "Install Kafka and Confluent Schema"
   hosts: kafka
