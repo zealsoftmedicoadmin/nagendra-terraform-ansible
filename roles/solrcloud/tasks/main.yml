@@ -53,6 +53,14 @@
     dest: "{{ solr_root }}/home/node{{ item }}/solr.xml"
   loop: "{{ range(1, solr_instances_count + 1)|list }}"
 
+- name: Set permissions on Solr folders
+  file: 
+    path: "{{ solr_root }}"
+    recurse: yes
+    owner: '{{ solr_service_user }}'
+    group: '{{ solr_service_user }}'
+
+
 - name: Put Solr services
   template:
     src: solr.service.j2
@@ -63,14 +71,10 @@
   systemd:
     name: "solr{{ item }}.service"
     enabled: "yes"
+    state: "started"
+    daemon_reload: "yes"
   loop: "{{ range(1, solr_instances_count + 1)|list }}"
 
-- name: Set permissions on Solr folders
-  file: 
-    path: "{{ solr_root }}"
-    recurse: yes
-    owner: '{{ solr_service_user }}'
-    group: '{{ solr_service_user }}'
 
 
 

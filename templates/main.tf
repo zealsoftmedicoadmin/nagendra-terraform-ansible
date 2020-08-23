@@ -22,7 +22,7 @@ resource "google_compute_instance" "vm-instance" {
   }
 
   labels = {
-    "assigned_products": each.value.assigned_products
+    "assigned_products": each.value.label_assigned_products
   }
 
   metadata = {

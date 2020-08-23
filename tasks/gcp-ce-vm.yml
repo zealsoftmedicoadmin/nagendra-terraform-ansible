@@ -1,0 +1,52 @@
+---
+- name: "Generate SSH keypair"
+  openssh_keypair:
+    path: ./id_ssh_rsa
+  register: ssh_data
+
+- name: "Deploy VMs on Google Cloud with Terraform"
+  terraform:
+    project_path: "./terraform-vm"
+    state: present
+    variables:
+      ssh_user: "esh"
+      ssh_key: "{{ ssh_data.public_key }}"
+  register: terraform_result
+
+- name: "Add deployed hosts to Ansible inventory: zookeeper and solr groups"
+  add_host:
+    hostname: "{{ item.name }}"
+    ansible_ssh_host: "{{ item.ip }}"
+    ansible_user: esh
+    ansible_ssh_private_key_file: "{{ ssh_data.filename }}"
+    ansible_python_interpreter: /usr/bin/python3
+    groups:
+      - zookeeper
+      - solr
+  when: item.labels.assigned_products == "zookeeper-solr"
+  loop: "{{ terraform_result.outputs.vminfo.value }}"
+
+- name: "Add deployed hosts to Ansible inventory: zookeeper and kafka groups"
+  add_host:
+    hostname: "{{ item.name }}"
+    ansible_ssh_host: "{{ item.ip }}"
+    ansible_user: esh
+    ansible_ssh_private_key_file: "{{ ssh_data.filename }}"
+    ansible_python_interpreter: /usr/bin/python3
+    groups:
+      - zookeeper
+      - kafka
+  when: item.labels.assigned_products == "zookeeper-kafka"
+  loop: "{{ terraform_result.outputs.vminfo.value }}"
+
+- name: "Add deployed hosts to Ansible inventory: sftp group"
+  add_host:
+    hostname: "{{ item.name }}"
+    ansible_ssh_host: "{{ item.ip }}"
+    ansible_user: esh
+    ansible_ssh_private_key_file: "{{ ssh_data.filename }}"
+    ansible_python_interpreter: /usr/bin/python3
+    groups:
+      - sftp
+  when: item.labels.assigned_products == "sftp"
+  loop: "{{ terraform_result.outputs.vminfo.value }}"

@@ -15,7 +15,7 @@ resource "google_compute_url_map" "default" {
 }
 
 resource "google_compute_target_http_proxy" "default" {
-  name = var.http_proxy_name # "http-lb-proxy"
+  name = var.http_proxy_name
   url_map = google_compute_url_map.default.self_link
 }
 

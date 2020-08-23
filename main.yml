@@ -1,64 +1,22 @@
 ---
-- name: "Generate SSH keypair"
+- name: "Create public storage bucket"
   hosts: localhost
   gather_facts: no
   become: no
   tasks:
-  - name: "Generate SSH"
-    openssh_keypair:
-      path: ./id_ssh_rsa
-    register: ssh_data
+  - import_tasks: tasks/gcp-bucket-lb.yml
+    tags: [ "terraform-glb" ]
 
-- name: "Deploy VMs on Google Cloud with Terraform"
+- name: "Create GCE machines and populates Ansible inventory"
   hosts: localhost
   gather_facts: no
   become: no
   tasks:
-  - name: "Deploy VMs on Google Cloud"
-    terraform:
-      project_path: "./terraform"
-      state: present
-      variables:
-        ssh_user: "esh"
-        ssh_key: "{{ ssh_data.public_key }}"
-    register: terraform_result
-
-
-- name: "Adding deployed hosts to Ansible inventory. Based on labels"
-  hosts: localhost
-  gather_facts: no
-  become: no
-  tasks:
-
-  - name: Add to zookeeper and solr groups
-    add_host:
-      hostname: "{{ item.name }}"
-      ansible_ssh_host: "{{ item.ip }}"
-      ansible_user: esh
-      ansible_ssh_private_key_file: "{{ ssh_data.filename }}"
-      ansible_python_interpreter: /usr/bin/python3
-      groups:
-        - zookeeper
-        - solr
-    when: item.labels.assigned_products == "zookeeper-solr"
-    loop: "{{ terraform_result.outputs.vminfo.value }}"
-
-  - name: Add to zookeeper and kafka groups
-    add_host:
-      hostname: "{{ item.name }}"
-      ansible_ssh_host: "{{ item.ip }}"
-      ansible_user: esh
-      ansible_ssh_private_key_file: "{{ ssh_data.filename }}"
-      ansible_python_interpreter: /usr/bin/python3
-      groups:
-        - zookeeper
-        - kafka
-    when: item.labels.assigned_products == "zookeeper-kafka"
-    loop: "{{ terraform_result.outputs.vminfo.value }}"
-
+  - import_tasks: tasks/gcp-ce-vm.yml
+    tags: [ "terraform-vm" ]
 
 - name: "Install required software"
-  hosts: all
+  hosts: java
   gather_facts: no
   become: yes
   tasks:
@@ -69,7 +27,7 @@
       name: default-jdk
       state: present
       update_cache: yes
-
+  tags: [ "java" ]
 
 - name: "Install Zookeeper"
   hosts: zookeeper
@@ -77,6 +35,7 @@
   become: yes
   roles:
     - { role: zookeeper }
+  tags: [ "zookeeper" ]
 
 
 - name: "Install SolrCloud"
@@ -85,6 +44,7 @@
   become: yes
   roles:
     - { role: solrcloud }
+  tags: [ "solrcloud" ]
 
 
 - name: "Install Kafka and Confluent Schema"
@@ -94,21 +54,11 @@
   roles:
     - kafka
     - confluent-schema
+  tags: [ "kafka" ]
 
-- name: test-playbook | Test sftp-server role
+- name: "Configure SFTP server"
   hosts: sftp
   become: yes
-  vars:
-    - sftp_home_partition: "/srv"
-    - sftp_allow_passwords: True
-    - sftp_users:
-      - name: peter
-        password: "$1$salty$li5TXAa2G6oxHTDkqx3Dz/" # passpass
-        mode: "0770"
-        shell: False
-      - name: sally
-        password: "$1$salty$li5TXAa2G6oxHTDkqx3Dz/" # passpass
-        mode: "0770"
-        shell: False
   roles:
     - sftp
+  tags: [ "sftp" ]

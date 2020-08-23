@@ -136,4 +136,4 @@ zookeeper.connection.timeout.ms=18000
 group.initial.rebalance.delay.ms=0
 
 port={{ 9092 + item }}
-advertised.host.name = {{ kafka_dns_name }}
+advertised.host.name = {{ ansible_ssh_host }}

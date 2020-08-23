@@ -49,6 +49,14 @@
     dest: "{{ zookeeper_root }}/node{{ item }}/conf/zoo.cfg"
   loop: "{{ range(1, zookeeper_instances_count + 1)|list }}"
 
+- name: Set permissions on Zookeeper folders
+  file: 
+    path: "{{ zookeeper_root }}"
+    recurse: yes
+    owner: "{{ zookeeper_service_user }}"
+    group: "{{ zookeeper_service_user }}"
+  loop: "{{ range(1, zookeeper_instances_count + 1)|list }}"
+
 - name: Put Zookeeper services
   template:
     src: zk.service.j2
@@ -59,12 +67,7 @@
   systemd:
     name: "zk{{ item }}.service"
     enabled: "yes"
+    state: "started"
+    daemon_reload: "yes"
   loop: "{{ range(1, zookeeper_instances_count + 1)|list }}"
 
-- name: Set permissions on Zookeeper folders
-  file: 
-    path: "{{ zookeeper_root }}"
-    recurse: yes
-    owner: "{{ zookeeper_service_user }}"
-    group: "{{ zookeeper_service_user }}"
-  loop: "{{ range(1, zookeeper_instances_count + 1)|list }}"

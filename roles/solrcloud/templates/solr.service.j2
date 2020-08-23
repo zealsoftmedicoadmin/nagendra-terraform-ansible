@@ -9,11 +9,12 @@ Type=forking
 WorkingDirectory={{ solr_root }}
 User={{ solr_service_user }}
 Group={{ solr_service_user }}
-ExecStart={{ solr_root }}/bin/solr start -cloud -s {{ solr_root }}/home/node{{ item }} -h {{ solr_dns_name }} -p {{ 8982 + item }} -z localhost:2181,localhost:2182,localhost:2183
+ExecStart={{ solr_root }}/bin/solr start -cloud -s {{ solr_root }}/home/node{{ item }} -h {{ ansible_ssh_host }} -p {{ 8982 + item }} -z localhost:2181,localhost:2182,localhost:2183
 ExecStop={{ solr_root }}/bin/solr stop -p {{ 8982 + item }}
 ExecReload={{ solr_root }}/bin/solr restart  -p {{ 8982 + item }}
 TimeoutSec=30
 Restart=on-failure
+RestartSec=20
 
 [Install]
 WantedBy=default.target

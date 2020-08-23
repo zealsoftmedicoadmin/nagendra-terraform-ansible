@@ -95,7 +95,7 @@ module "vm-instance" {
         "network" = module.vpc.network,
         "subnetwork" = module.vpc.subnetwork,
         "zone" = "us-central1-a",
-        "assigned_products" = "zookeeper-solr",
+        "label_assigned_products" = "zookeeper-solr",
         "ssh_user" = var.ssh_user,
         "ssh_key" = var.ssh_key
     }
@@ -105,32 +105,20 @@ module "vm-instance" {
         "network" = module.vpc.network,
         "subnetwork" = module.vpc.subnetwork,
         "zone" = "us-central1-a",
-        "assigned_products" = "zookeeper-kafka",
+        "label_assigned_products" = "zookeeper-kafka",
+        "ssh_user" = var.ssh_user,
+        "ssh_key" = var.ssh_key
+    }
+    "sftp-dev" = {
+        "machine_type" = "n1-standard-1",
+        "image" = "ubuntu-1804-bionic-v20200807",
+        "network" = module.vpc.network,
+        "subnetwork" = module.vpc.subnetwork,
+        "zone" = "us-central1-a",
+        "label_assigned_products" = "sftp",
         "ssh_user" = var.ssh_user,
         "ssh_key" = var.ssh_key
     }
   }
 }
 
-module "gcp-bucket" {
-  
-  source = "./modules/gcp-bucket"
-
-  bucket_name = "test-web-bucket"
-  bucket_location = "US"
-
-}
-
-module "gcp-lb" {
-  
-  source = "./modules/gcp-lb"
-
-  extip_name = "http-lb-address"
-  backend_bucket_name = "backend-bucket-1"
-  bucket_name = module.gcp-bucket.bucket_name
-
-  urlmap_name = "url-map-1"
-  http_proxy_name = "http-lb-proxy"
-  forward_rule_name = "http-lb-forward-rule-1"
-
-}

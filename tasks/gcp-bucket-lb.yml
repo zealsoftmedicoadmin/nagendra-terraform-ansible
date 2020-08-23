@@ -1,0 +1,12 @@
+---
+- name: "Create GCP storage bucket and external load balancer"
+  terraform:
+    project_path: "./terraform-glb"
+    state: present
+  register: terraform_result
+
+- name: Sync files with storage bucket
+  vars:
+    src_files: "/home/keygen/src"
+  command: "gsutil -m rsync -r {{ src_files }} gs://{{ terraform_result.outputs.storage_bucket_name.value }}"
+  register: mymotd

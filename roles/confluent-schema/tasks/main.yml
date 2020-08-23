@@ -30,6 +30,14 @@
     src: schema-registry.properties.j2
     dest: "{{ confluent_root }}/etc/schema-registry/schema-registry.properties"
 
+- name: Set permissions on Confluent folders
+  file: 
+    path: "{{ confluent_root }}"
+    recurse: yes
+    owner: "{{ confluent_service_user }}"
+    group: "{{ confluent_service_user }}"
+
+
 - name: Put Confluent schema service
   template:
     src: c-schema.service.j2
@@ -39,12 +47,8 @@
   systemd:
     name: "c-schema.service"
     enabled: "yes"
+    state: "started"
+    daemon_reload: "yes"
 
-- name: Set permissions on Confluent folders
-  file: 
-    path: "{{ confluent_root }}"
-    recurse: yes
-    owner: "{{ confluent_service_user }}"
-    group: "{{ confluent_service_user }}"
 
 

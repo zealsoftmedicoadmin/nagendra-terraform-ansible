@@ -2,13 +2,13 @@
 # defaults file
 # Setup vars
 
-zookeeper_distribution_url: "http://mirror.linux-ia64.org/apache/zookeeper/zookeeper-3.6.1/apache-zookeeper-3.6.1-bin.tar.gz"
-zookeeper_distribution_dest: "/tmp/apache-zookeeper-3.6.1-bin.tar.gz"
-zookeeper_root: "/srv/zookeeper"
+zookeeper_distribution_url: ""
+zookeeper_distribution_dest: ""
+zookeeper_root: ""
 
-zookeeper_service_user: "zk_service"
+zookeeper_service_user: ""
 # password: Hdosuwn763Hgpo
 # command to generate: ansible all -i localhost, -m debug -a "msg={{ 'Hdosuwn763Hgpo' | password_hash('sha512', 'mysalt') }}"
-zookeeper_service_user_password: "$6$mysalt$cmk99ocCqrrYSxgm5Ym4MXpPmDnoSZJVcZAWS.Z3MufYfIYIiEk0HUZGLY4ulVPfZMpHJvYjH/mFKjSbOPAh40"
+zookeeper_service_user_password: ""
 
 zookeeper_instances_count: 3

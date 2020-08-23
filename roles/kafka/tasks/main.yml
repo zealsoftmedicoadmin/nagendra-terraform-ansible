@@ -51,6 +51,13 @@
     path: "{{ kafka_root }}/config/server.properties"
     state: absent
 
+- name: Set permissions on Kafka root
+  file: 
+    path: "/srv/kafka"
+    recurse: yes
+    owner: '{{ kafka_service_user }}'
+    group: '{{ kafka_service_user }}'
+
 - name: Put Kafka services
   template:
     src: kafka.service.j2
@@ -61,13 +68,10 @@
   systemd:
     name: "kafka{{ item }}.service"
     enabled: "yes"
+    state: "started"
+    daemon_reload: "yes"
   loop: "{{ range(1, kafka_instances_count + 1)|list }}"
 
-- name: Set permissions on Kafka root
-  file: 
-    path: "/srv/kafka"
-    recurse: yes
-    owner: '{{ kafka_service_user }}'
-    group: '{{ kafka_service_user }}'
+
 
 

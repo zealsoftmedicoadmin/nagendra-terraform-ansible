@@ -15,9 +15,5 @@ resource "google_storage_bucket_iam_binding" "binding" {
   ]
 }
 
-# resource "google_storage_bucket_object" "files" {
-#   name = var.src_files_name
-#   source = var.src_files_path
-#   bucket = google_storage_bucket.bucket.name
-# }
+
 
