@@ -4,12 +4,16 @@
     path: ./id_ssh_rsa
   register: ssh_data
 
+- name: Make terraform-vm/main.tf file from Ansible inventory
+  template:
+    src: "./templates/main.tf.j2"
+    dest: "./terraform-vm/main.tf"
+
 - name: "Deploy VMs on Google Cloud with Terraform"
   terraform:
     project_path: "./terraform-vm"
     state: present
     variables:
-      ssh_user: "esh"
       ssh_key: "{{ ssh_data.public_key }}"
   register: terraform_result
 

@@ -89,36 +89,18 @@ module "vm-instance" {
 ***********/
 
   instances = {
-    "solr-dev" = {
-        "machine_type" = "n1-standard-1",
-        "image" = "ubuntu-1804-bionic-v20200807",
+  {% for item in hostvars | flatten(levels=1) %}
+    "{{ item }}" = {
+        "machine_type" = "{{ hostvars[item].gcp_terraform_machine_type }}",
+        "image" = "{{ hostvars[item].gcp_terraform_image }}",
         "network" = module.vpc.network,
         "subnetwork" = module.vpc.subnetwork,
-        "zone" = "us-central1-a",
-        "label_assigned_products" = "product",
-        "ssh_user" = "user",
+        "zone" = "{{ hostvars[item].gcp_terraform_zone }}",
+        "label_assigned_products" = "{{ hostvars[item].gcp_terraform_label_assigned_products }}",
+        "ssh_user" = "{{ hostvars[item].ssh_user }}",
         "ssh_key" = var.ssh_key
     }
-    "kafka-dev" = {
-        "machine_type" = "n1-standard-1",
-        "image" = "ubuntu-1804-bionic-v20200807",
-        "network" = module.vpc.network,
-        "subnetwork" = module.vpc.subnetwork,
-        "zone" = "us-central1-a",
-        "label_assigned_products" = "product",
-        "ssh_user" = "user",
-        "ssh_key" = var.ssh_key
-    }
-    "sftp-dev" = {
-        "machine_type" = "n1-standard-1",
-        "image" = "ubuntu-1804-bionic-v20200807",
-        "network" = module.vpc.network,
-        "subnetwork" = module.vpc.subnetwork,
-        "zone" = "us-central1-a",
-        "label_assigned_products" = "product",
-        "ssh_user" = "user",
-        "ssh_key" = var.ssh_key
-    }
+  {% endfor %}
   }
 }
 
