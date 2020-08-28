@@ -12,6 +12,9 @@ services:
       ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
     networks:
       - kafka
+    volumes:
+      - vol_zoo1_data:/data
+      - vol_zoo1_datalog:/datalog
 
   zoo2:
     image: zookeeper
@@ -25,6 +28,9 @@ services:
       ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
     networks:
       - kafka
+    volumes:
+      - vol_zoo2_data:/data
+      - vol_zoo2_datalog:/datalog
 
   zoo3:
     image: zookeeper
@@ -38,6 +44,9 @@ services:
       ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
     networks:
       - kafka
+    volumes:
+      - vol_zoo3_data:/data
+      - vol_zoo3_datalog:/datalog
 
   kafka1:
     image: bitnami/kafka:latest
@@ -53,6 +62,8 @@ services:
       - zoo1
       - zoo2
       - zoo3
+    volumes:
+      - vol_kafka1:/bitnami/kafka
 
   kafka2:
     image: bitnami/kafka:latest
@@ -68,6 +79,8 @@ services:
       - zoo1
       - zoo2
       - zoo3
+    volumes:
+      - vol_kafka2:/bitnami/kafka
 
   kafka3:
     image: bitnami/kafka:latest
@@ -83,6 +96,8 @@ services:
       - zoo1
       - zoo2
       - zoo3
+    volumes:
+      - vol_kafka3:/bitnami/kafka
 
   schema:
     image: confluentinc/cp-schema-registry
@@ -105,3 +120,15 @@ services:
 
 networks:
   kafka:
+
+volumes:
+  vol_zoo1_data:
+  vol_zoo1_datalog:
+  vol_zoo2_data:
+  vol_zoo2_datalog:
+  vol_zoo3_data:
+  vol_zoo3_datalog:
+  vol_kafka1:
+  vol_kafka2:
+  vol_kafka3:
+    

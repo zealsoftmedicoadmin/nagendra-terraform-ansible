@@ -1,7 +1,4 @@
 ---
-# defaults file
-# Setup vars
-
 zookeeper_distribution_url: ""
 zookeeper_distribution_dest: ""
 zookeeper_root: ""

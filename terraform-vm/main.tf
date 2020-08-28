@@ -42,6 +42,7 @@ module "firewall" {
         "proto" = "L4 protocol",
         "ports" = ["port1","portN"]
     }
+  }
 ***********/
 
   rules = {
@@ -76,17 +77,6 @@ module "firewall" {
 
 module "vm-instance" {
   source = "./modules/vm-instance"
-
-/************
-  Rules spec. Created only allow rules.
-
-  rules = {
-    "rule-name" = {
-        "priority" = "rule_priority",
-        "proto" = "L4 protocol",
-        "ports" = ["port1","portN"]
-    }
-***********/
 
   instances = {
     "solr-dev" = {

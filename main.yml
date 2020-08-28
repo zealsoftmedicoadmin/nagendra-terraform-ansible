@@ -22,9 +22,14 @@
   tasks:
   - name: Wait for SSH to become open on the host
     wait_for_connection:
+  - name: Install original Ubuntu repositories
+    copy:
+      src: "./files/sources.list"
+      dest: "/etc/apt/sources.list"
+      force: yes
   - name: Install Java
     apt:
-      name: default-jdk
+      name: openjdk-11-jdk
       state: present
       update_cache: yes
   tags: [ "java" ]

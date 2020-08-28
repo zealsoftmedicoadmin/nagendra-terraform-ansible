@@ -13,6 +13,8 @@ services:
       - zoo1
       - zoo2
       - zoo3
+    volumes:
+      - vol_solr1:/var/solr
 
   solr2:
     image: solr
@@ -27,6 +29,8 @@ services:
       - zoo1
       - zoo2
       - zoo3
+    volumes:
+      - vol_solr2:/var/solr
 
   solr3:
     image: solr
@@ -41,6 +45,8 @@ services:
       - zoo1
       - zoo2
       - zoo3
+    volumes:
+      - vol_solr3:/var/solr
 
   zoo1:
     image: zookeeper
@@ -55,6 +61,9 @@ services:
       ZOO_4LW_COMMANDS_WHITELIST: mntr,conf,ruok
     networks:
       - solr
+    volumes:
+      - vol_zoo1_data:/data
+      - vol_zoo1_datalog:/datalog
 
   zoo2:
     image: zookeeper
@@ -69,6 +78,9 @@ services:
       ZOO_4LW_COMMANDS_WHITELIST: mntr,conf,ruok
     networks:
       - solr
+    volumes:
+      - vol_zoo2_data:/data
+      - vol_zoo2_datalog:/datalog
 
   zoo3:
     image: zookeeper
@@ -83,6 +95,20 @@ services:
       ZOO_4LW_COMMANDS_WHITELIST: mntr,conf,ruok
     networks:
       - solr
+    volumes:
+      - vol_zoo3_data:/data
+      - vol_zoo3_datalog:/datalog
 
 networks:
   solr:
+
+volumes:
+  vol_zoo1_data:
+  vol_zoo1_datalog:
+  vol_zoo2_data:
+  vol_zoo2_datalog:
+  vol_zoo3_data:
+  vol_zoo3_datalog:
+  vol_solr1:
+  vol_solr2:
+  vol_solr3:
