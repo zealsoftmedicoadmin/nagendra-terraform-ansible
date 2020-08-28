@@ -20,19 +20,19 @@
 
 # Folder structure
 
-* [docker-compose/](.\nagendra_solr_kafka_zookeeper\docker-compose) - Docker Compose files for local deployment Zookeeper+Solr and Zookeeper+Kafka services
-* [files/](.\nagendra_solr_kafka_zookeeper\files) - contains single file `sources.list`. Used by Ansible to install original Ubuntu repositories before install Java packages
-* [roles/](.\nagendra_solr_kafka_zookeeper\roles) - number of Ansible roles for deployment
-* [tasks/](.\nagendra_solr_kafka_zookeeper\tasks) - number of Ansible tasks included in the `main.yml` playbook
+* [docker-compose/](docker-compose) - Docker Compose files for local deployment Zookeeper+Solr and Zookeeper+Kafka services
+* [files/](files) - contains single file `sources.list`. Used by Ansible to install original Ubuntu repositories before install Java packages
+* [roles/](roles) - number of Ansible roles for deployment
+* [tasks/](tasks) - number of Ansible tasks included in the `main.yml` playbook
     * `gcp-bucket-lb.yml` - Ansible tasks for creating GCP Storage Bucket with public access and setup GCP Load Balancer with that bucket as backend. Uses Terraform files in `terraform-glb` folder
     * `gcp-ce-vm.yml` - Ansible tasks for creating: custom VPC network, firewall rules, number of GCE instances. Uses Terraform files in `terraform-vm` folder
-* [templates/](.\nagendra_solr_kafka_zookeeper\templates) - contains single file `main.tf.j2`. Used by tasks in `gcp-ce-vm.yml` to create Terraform `terraform-vm/main.tf` file and populate it with hosts parameters from `hosts.yml`
-* [terraform-glb/](.\nagendra_solr_kafka_zookeeper\terraform-glb) - Terraform manifest files for creating GCP Storage Bucket with public access and setup GCP Load Balancer with that bucket as backend. Outputs GCP storage bucket name as variable `storage_bucket_name`. You need to specify GCP project ID, region and JSON credentials file in `terraform.tfvars` file. For different customizations, see `README.md` files in the module root folder.
-* [terraform-vm/](.\nagendra_solr_kafka_zookeeper\terraform-vm) - Terraform manifest files for creating: custom VPC network, firewall rules, number of GCE instances. Outputs some VM parameters as array variable `vminfo`. You need to specify GCP project ID, region and JSON credentials file in `terraform.tfvars` file. For different customizations, see `README.md` files in the module root folder.
-* [ansible.cfg](.\nagendra_solr_kafka_zookeeper\ansible.cfg) - custom Ansible configuration file
-* [hosts.yml](.\nagendra_solr_kafka_zookeeper\hosts.yml) - Ansible inventory file. See below detailed description.
-* [main.yml](.\nagendra_solr_kafka_zookeeper\main.yml) - main Ansible playbook file
-* [README.md](.\nagendra_solr_kafka_zookeeper\README.md) - this file
+* [templates/](templates) - contains single file `main.tf.j2`. Used by tasks in `gcp-ce-vm.yml` to create Terraform `terraform-vm/main.tf` file and populate it with hosts parameters from `hosts.yml`
+* [terraform-glb/](terraform-glb) - Terraform manifest files for creating GCP Storage Bucket with public access and setup GCP Load Balancer with that bucket as backend. Outputs GCP storage bucket name as variable `storage_bucket_name`. You need to specify GCP project ID, region and JSON credentials file in `terraform.tfvars` file. For different customizations, see `README.md` files in the module root folder.
+* [terraform-vm/](terraform-vm) - Terraform manifest files for creating: custom VPC network, firewall rules, number of GCE instances. Outputs some VM parameters as array variable `vminfo`. You need to specify GCP project ID, region and JSON credentials file in `terraform.tfvars` file. For different customizations, see `README.md` files in the module root folder.
+* [ansible.cfg](ansible.cfg) - custom Ansible configuration file
+* [hosts.yml](hosts.yml) - Ansible inventory file. See below detailed description.
+* [main.yml](main.yml) - main Ansible playbook file
+* [README.md](README.md) - this file
 
 
 # Inventory file: `hosts.yml`
