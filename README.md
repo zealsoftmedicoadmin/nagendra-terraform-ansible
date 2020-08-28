@@ -49,7 +49,7 @@ all:
       gcp_terraform_image: # Boot image for GCE VM instance
       gcp_terraform_zone: # Zone in which will deploy GCE VM instance
       gcp_terraform_label_assigned_products: # Labels for GCE VM instance
-      ssh_user: esh # user, used for connect to deployed GCE VM instance
+      ssh_user: # user, used for connect to deployed GCE VM instance
       ansible_python_interpreter: # Ansible interpreter
   children:
     java:
