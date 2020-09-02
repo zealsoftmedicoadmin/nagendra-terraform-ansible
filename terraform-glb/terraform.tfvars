@@ -7,6 +7,6 @@
 
 **************************************************************************/
 
-global_project = "default"
+global_project = "eshtestlab"
 global_region = "us-central1"
 global_credentials_file = "gcloud_terraform.json"

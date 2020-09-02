@@ -42,14 +42,19 @@ Simplest form of this file:
 
 ```yaml
 all:
+  vars:
+    # user, used for connect to deployed GCE VM instance, will be created with ssh private key and 
+    # assigned into VMs metadata. Later you can use this user and generated private key for login 
+    # to VM.
+    gcp_ssh_user: 
   hosts:
-    # here host variables for Terraform, Ansible use it to populate terraform-vm/main.tf Terraform file
+    # here host variables for Terraform, Ansible use it to populate terraform-vm/main.tf 
+    # Terraform file
     hostname-of-gce-instance:
       gcp_terraform_machine_type: # type of GCE VM instance
       gcp_terraform_image: # Boot image for GCE VM instance
       gcp_terraform_zone: # Zone in which will deploy GCE VM instance
       gcp_terraform_label_assigned_products: # Labels for GCE VM instance
-      ssh_user: # user, used for connect to deployed GCE VM instance
       ansible_python_interpreter: # Ansible interpreter
   children:
     java:
@@ -85,6 +90,11 @@ all:
 ```
 See actual `hosts.yml` file for full example.
 
+# High level operation scheme
+1. Generate SSH key-pair  
+2. Generate `terraform-vm/main.tf` file using variables with prefix `gcp_` from `hosts.yml`  
+3. Creating GCE VMs with Terraform. Assign to the VM metadata `gcp_ssh_user` defined in `hosts.yml` and generated SSH public key  
+4. Use external IP address provided by Terraform, `gcp_ssh_user` and generated SSH private key for connect to the VMs and perform Ansible deployment operations.
 
 # Other notes
 1. If you need to run the full deployment process. You will define in `hosts.yml`: gcp_terraform... variables, differentiate hosts into inventory groups and customize software deployments with roles variables. Take a note, that inventory does not contain ip addresses of hosts. IP addresses included in inventory dynamically by special Ansible task. It takes IP addresses from Terraform.

@@ -86,7 +86,7 @@ module "vm-instance" {
         "subnetwork" = module.vpc.subnetwork,
         "zone" = "us-central1-a",
         "label_assigned_products" = "product",
-        "ssh_user" = "user",
+        "ssh_user" = var.ssh_user,
         "ssh_key" = var.ssh_key
     }
     "kafka-dev" = {
@@ -96,7 +96,7 @@ module "vm-instance" {
         "subnetwork" = module.vpc.subnetwork,
         "zone" = "us-central1-a",
         "label_assigned_products" = "product",
-        "ssh_user" = "user",
+        "ssh_user" = var.ssh_user,
         "ssh_key" = var.ssh_key
     }
     "sftp-dev" = {
@@ -106,7 +106,7 @@ module "vm-instance" {
         "subnetwork" = module.vpc.subnetwork,
         "zone" = "us-central1-a",
         "label_assigned_products" = "product",
-        "ssh_user" = "user",
+        "ssh_user" = var.ssh_user,
         "ssh_key" = var.ssh_key
     }
   }

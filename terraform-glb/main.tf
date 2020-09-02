@@ -12,6 +12,12 @@ provider "google" {
   region = var.global_region
 }
 
+resource "random_integer" "gcp_bucket_suffix" {
+  min = 1
+  max = 1000
+}
+
+
 /***********
   Modules
 ***********/
@@ -20,7 +26,7 @@ module "gcp-bucket" {
   
   source = "./modules/gcp-bucket"
 
-  bucket_name = "test-web-bucket"
+  bucket_name = "medico-${random_integer.gcp_bucket_suffix.result}"
   bucket_location = "US"
 
 }

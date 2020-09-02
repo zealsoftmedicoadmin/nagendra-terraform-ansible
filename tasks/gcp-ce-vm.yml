@@ -14,6 +14,7 @@
     project_path: "./terraform-vm"
     state: present
     variables:
+      ssh_user: "{{ gcp_ssh_user }}"
       ssh_key: "{{ ssh_data.public_key }}"
   register: terraform_result
 
@@ -21,7 +22,7 @@
   add_host:
     hostname: "{{ item.name }}"
     ansible_ssh_host: "{{ item.ip }}"
-    ansible_user: esh
+    ansible_user: "{{ gcp_ssh_user }}"
     ansible_ssh_private_key_file: "{{ ssh_data.filename }}"
     ansible_python_interpreter: /usr/bin/python3
     groups:
@@ -34,7 +35,7 @@
   add_host:
     hostname: "{{ item.name }}"
     ansible_ssh_host: "{{ item.ip }}"
-    ansible_user: esh
+    ansible_user: "{{ gcp_ssh_user }}"
     ansible_ssh_private_key_file: "{{ ssh_data.filename }}"
     ansible_python_interpreter: /usr/bin/python3
     groups:
@@ -47,7 +48,7 @@
   add_host:
     hostname: "{{ item.name }}"
     ansible_ssh_host: "{{ item.ip }}"
-    ansible_user: esh
+    ansible_user: "{{ gcp_ssh_user }}"
     ansible_ssh_private_key_file: "{{ ssh_data.filename }}"
     ansible_python_interpreter: /usr/bin/python3
     groups:
