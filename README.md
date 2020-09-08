@@ -15,8 +15,15 @@
 9. To create dev VMs run:
     - customize VMs parameters in `terraform-glb/hosts.yml` file (at least ssh user)
     - run the following command:
-        `ansible-playbook -i hosts.yml -v main.yml --skip-tags "terraform-glb"`
+        `ansible-playbook -i hosts.yml -v main.yml --tags "terraform-vm"`
 
+# Destroying infrastructure
+1. To destroy GCP Storage Bucket and Google Load Balancer with that bucket as backend:
+    - run the following command:
+        `ansible-playbook -i hosts.yml -v main.yml --tags "terraform-glb-destroy"`
+2. To destroy dev VMs run:
+    - run the following command:
+        `ansible-playbook -i hosts.yml -v main.yml --tags "terraform-vm-destroy"`
 
 # Folder structure
 
@@ -47,6 +54,10 @@ all:
     # assigned into VMs metadata. Later you can use this user and generated private key for login 
     # to VM.
     gcp_ssh_user: 
+    # variables which controls issue of [terraform init] command. If you deploy environment at first
+    # time, you will need to set this variables to True unless issue [terraform init] command manually
+    terraform_init_bucket: True
+    terraform_init_vm: True
   hosts:
     # here host variables for Terraform, Ansible use it to populate terraform-vm/main.tf 
     # Terraform file

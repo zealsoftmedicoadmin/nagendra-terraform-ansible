@@ -3,6 +3,7 @@
   terraform:
     project_path: "./terraform-glb"
     state: present
+    force_init: "{{ terraform_init_bucket }}"
   register: terraform_result
 
 # - name: Sync files with storage bucket

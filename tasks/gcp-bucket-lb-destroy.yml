@@ -1,0 +1,6 @@
+---
+- name: "Destroy GCP storage bucket and external load balancer"
+  terraform:
+    project_path: "./terraform-glb"
+    state: absent
+

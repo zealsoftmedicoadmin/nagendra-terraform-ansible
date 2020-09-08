@@ -1,0 +1,5 @@
+---
+- name: "Destroy VMs on Google Cloud with Terraform"
+  terraform:
+    project_path: "./terraform-vm"
+    state: absent

@@ -13,6 +13,7 @@
   terraform:
     project_path: "./terraform-vm"
     state: present
+    force_init: "{{ terraform_init_vm }}"
     variables:
       ssh_user: "{{ gcp_ssh_user }}"
       ssh_key: "{{ ssh_data.public_key }}"
