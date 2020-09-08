@@ -4,7 +4,7 @@ I will go through the points and write my questions / comments
 
 > ### 1. Road map design architecture in GCP for Kafka, Solr cloud, load balancing, CDN, Kubernetes
 
-### DEV Environment
+#### DEV Environment
 Currently we have the following DEV environment:
 - 1 VM with: 3 Zookeeper instances, 3 SolrCloud instances - devided by port numbers
 - 1 VM with: 3 Zookeeper instances, 3 Kafka instances - devided by port numbers
@@ -17,13 +17,13 @@ Are this configuration enough for DEV envionment? Or need to make some changes, 
 - set up SSL for services
 - etc.
 
-### STAGING Environment
+#### STAGING Environment
 What are the requirements for STAGING environment:
 - how many VMs + application instances per VM needed for SolrCloud and Zookeeper?
 - how many VMs + application instances per VM needed for Kafka and Zookeeper?
 - is it necessary to set up Zookeeper service on separate VMs for serving both SolrCloud and Kafka application instances?
 
-### PRODUCTION Environment
+#### PRODUCTION Environment
 To save time on research and testing I'm start talking about PRODUCTION environment which I plan to take as a base for testing. I will expect to get your opinion about this environment.
 
 At this moment I see the following PRODUCTION environment:
